@@ -1,0 +1,30 @@
+{
+  "name": "@rabby-wallet/widgets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rollup.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RabbyHub/Widgets.git"
+  },
+  "author": "vvvvvv1vvvvvv",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RabbyHub/Widgets/issues"
+  },
+  "homepage": "https://github.com/RabbyHub/Widgets#readme",
+  "devDependencies": {
+    "@rollup/plugin-image": "^2.1.1",
+    "@rollup/plugin-typescript": "^8.3.1",
+    "rollup": "^2.69.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "@redux-devtools/core": "^3.11.0"
+  }
+}
