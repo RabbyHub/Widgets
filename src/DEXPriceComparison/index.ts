@@ -74,8 +74,8 @@ export default class DEXPriceComparison extends Widget {
         box-shadow: 0px 24px 40px rgba(134, 151, 255, 0.08);
         border-radius: 6px;
         padding: 8px;
-        width: 296px;
-        height: 114px;
+        width: 316px;
+        height: 122px;
         z-index: 1;
       }
       .rabby-widget-dex-price-comparison__header {
@@ -94,7 +94,7 @@ export default class DEXPriceComparison extends Widget {
       .rabby-widget-dex-price-comparison__item {
         height: 16px;
         width: 100%;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         display: flex;
       }
       .rabby-widget-dex-price-comparison__item .icon-dex {
@@ -137,7 +137,7 @@ export default class DEXPriceComparison extends Widget {
         line-height: 14px;
         color: #13141A;
         margin-right: 4px;
-        max-width: 55px;
+        max-width: 60px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
