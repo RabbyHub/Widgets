@@ -205,6 +205,7 @@ export default class DEXPriceComparison extends Widget {
           const query = query2obj(url);
           if (query.chain && query.chain === "mainnet" && isUrlMatched(url, DEXPriceComparison.include)) {
             this.enable = true;
+            this.render();
           } else {
             this.enable = false;
             this.destory();
@@ -411,6 +412,7 @@ export default class DEXPriceComparison extends Widget {
     );
     Promise.allSettled([...quotes]).then(
       ([res1inch, resParaswap, resMatcha]) => {
+        if (!this.enable) return;
         quotes = [res1inch, resParaswap, resMatcha]
           .map((item, index) => {
             if (item.status === "fulfilled" && !('error_msg' in item.value)) {
