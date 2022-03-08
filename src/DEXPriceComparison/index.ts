@@ -181,9 +181,15 @@ export default class DEXPriceComparison extends Widget {
         }
       }
     `;
-    window.addEventListener("DOMContentLoaded", () => {
+    if (document.readyState === "complete") {
       document.head.appendChild(style);
       this.currentRule.collector();
+    }
+    document.addEventListener("readystatechange", () => {
+      if (document.readyState === 'complete') {
+        document.head.appendChild(style);
+        this.currentRule.collector();
+      }
     });
     window.addEventListener("resize", this.handleResize);
   }
