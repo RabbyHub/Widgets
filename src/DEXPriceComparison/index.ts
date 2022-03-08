@@ -55,7 +55,7 @@ export default class DEXPriceComparison extends Widget {
   static widgetName = "DEX Price Comparison";
   static image = logo;
   static description =
-    "When you make a trade on some DEXes, show the prices of the corresponding trade on 1inch, Paraswap, Matcha. Only Ethereum transactions on Uniswap are supported for now.";
+    "When you make a trade on some DEXes, show the prices of the corresponding trade on 1inch, Paraswap, Matcha.\n\nOnly Ethereum transactions on Uniswap are supported for now.";
   static version = "1.0.0";
 
   constructor(rule: string) {
