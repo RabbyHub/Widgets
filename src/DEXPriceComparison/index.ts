@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import Widget from "../Widget";
-import { query2obj, obj2query, throttle } from "../utils";
+import { query2obj, obj2query, throttle, isUrlMatched } from "../utils";
 import logo from "./static/logo.svg";
 import bg from "./static/background.png";
 import icon1inch from "./static/1inch.png";
@@ -202,7 +202,7 @@ export default class DEXPriceComparison extends Widget {
         try {
           const url = window.location.href;
           const query = query2obj(url);
-          if (query.chain && query.chain === "mainnet") {
+          if (query.chain && query.chain === "mainnet" && isUrlMatched(url, DEXPriceComparison.include)) {
             this.enable = true;
           } else {
             this.enable = false;
