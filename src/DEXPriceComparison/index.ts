@@ -250,6 +250,7 @@ export default class DEXPriceComparison extends Widget {
                     to: tokenOutAddress,
                     fromDecimals: fromDecimals.toNumber(),
                     toDecimals: toDecimals.toNumber(),
+                    dexToAmount: data.quote,
                     amount,
                   });
                 }
@@ -353,9 +354,9 @@ export default class DEXPriceComparison extends Widget {
               <span class="rabby-widget-dex-price-comparison__item-symbol" title="${toSymbol}">${toSymbol}</span>
             </div>
             <span class="rabby-widget-dex-price-comparison__item-loss ${
-              quote.loss_ratio > 0 ? "red" : "green"
-            }">${quote.loss_ratio > 0 ? "-" : "+"} ${(
-            Math.abs(quote.loss_ratio) * 100
+              quote.ratio > 0 ? "green" : "red"
+            }">${quote.ratio > 0 ? "+" : "-"} ${(
+            Math.abs(quote.ratio)
           ).toFixed(2)}%</span>
           `;
           el.insertBefore(imgWrapper, el.firstChild);
@@ -379,6 +380,7 @@ export default class DEXPriceComparison extends Widget {
     amount: string;
     fromDecimals: number;
     toDecimals: number;
+    dexToAmount: string;
   }) => {
     let quotes = Dexs.map((dex) =>
       fetch(
@@ -401,11 +403,12 @@ export default class DEXPriceComparison extends Widget {
       ([res1inch, resParaswap, resMatcha]) => {
         quotes = [res1inch, resParaswap, resMatcha]
           .map((item, index) => {
-            if (item.status === "fulfilled") {
+            if (item.status === "fulfilled" && !('error_msg' in item.value)) {
               return {
                 id: Dexs[index].id,
                 name: Dexs[index].name,
                 icon: Dexs[index].icon,
+                ratio: new BigNumber(item.value.receive_token_amount).minus(new BigNumber(values.dexToAmount)).div(new BigNumber(values.dexToAmount)).toNumber() * 100,
                 ...item.value,
               };
             } else {
@@ -417,11 +420,11 @@ export default class DEXPriceComparison extends Widget {
             }
           })
           .sort((a, b) => {
-            if ("loss_ratio" in a && "loss_ratio" in b) {
-              return a.loss_ratio - b.loss_ratio;
-            } else if ("loss_ratio" in a) {
+            if ("ratio" in a && "ratio" in b) {
+              return b.ratio - a.ratio;
+            } else if ("ratio" in a) {
               return -1;
-            } else if ("loss_ratio" in b) {
+            } else if ("ratio" in b) {
               return 1;
             } else {
               return 0;
