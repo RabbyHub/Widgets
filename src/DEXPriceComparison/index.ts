@@ -26,6 +26,7 @@ interface UniSwapParams {
   tokenInChainId: string;
   tokenOutAddress: string;
   tokenOutChainId: string;
+  type: 'exactIn' | 'exactOut';
 }
 
 const Dexs = [
@@ -89,7 +90,7 @@ export default class DEXPriceComparison extends Widget {
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(120px);
         border-radius: 4px;
-        padding: 8px;
+        padding: 10px;
       }
       .rabby-widget-dex-price-comparison__item {
         height: 16px;
@@ -240,7 +241,7 @@ export default class DEXPriceComparison extends Widget {
                 const toDecimals = new BigNumber(data.quote).div(
                   new BigNumber(data.quoteDecimals)
                 );
-                const { tokenInAddress, tokenOutAddress, amount } = query2obj(
+                const { tokenInAddress, tokenOutAddress, amount, type } = query2obj(
                   url
                 ) as unknown as UniSwapParams;
                 if (tokenInAddress && tokenOutAddress && this.enable) {
@@ -252,6 +253,7 @@ export default class DEXPriceComparison extends Widget {
                     toDecimals: toDecimals.toNumber(),
                     dexToAmount: data.quote,
                     amount,
+                    type,
                   });
                 }
               });
@@ -381,15 +383,23 @@ export default class DEXPriceComparison extends Widget {
     fromDecimals: number;
     toDecimals: number;
     dexToAmount: string;
+    type: UniSwapParams['type']
   }) => {
+    const fromAmount = values.type === 'exactIn' ? values.amount : values.dexToAmount;
+    const toAmount = values.type === 'exactIn' ? values.dexToAmount : values.amount;
+    const fromTokenDecimals = values.type === 'exactIn' ? values.fromDecimals : values.toDecimals;
+    const toTokenDecimals = values.type === 'exactIn' ? values.toDecimals : values.fromDecimals;
+    const fromAddress = values.from;
+    const toAddress = values.to;
+
     let quotes = Dexs.map((dex) =>
       fetch(
         `https://openapi.debank.com/v1/wallet/swap_check?${obj2query({
           chain_id: "eth",
           dex_id: dex.id,
-          pay_token_id: values.from,
-          pay_token_amount: values.amount,
-          receive_token_id: values.to,
+          pay_token_id: fromAddress,
+          pay_token_amount: fromAmount,
+          receive_token_id: toAddress,
         })}`
       ).then((response) => {
         if (response.ok) {
@@ -408,7 +418,7 @@ export default class DEXPriceComparison extends Widget {
                 id: Dexs[index].id,
                 name: Dexs[index].name,
                 icon: Dexs[index].icon,
-                ratio: new BigNumber(item.value.receive_token_amount).minus(new BigNumber(values.dexToAmount)).div(new BigNumber(values.dexToAmount)).toNumber() * 100,
+                ratio: new BigNumber(item.value.receive_token_amount).minus(new BigNumber(toAmount)).div(new BigNumber(toAmount)).toNumber() * 100,
                 ...item.value,
               };
             } else {
@@ -432,9 +442,9 @@ export default class DEXPriceComparison extends Widget {
           });
         this.render({
           quotes,
-          fromDecimals: values.fromDecimals,
-          toDecimals: values.toDecimals,
-          amount: values.amount,
+          fromDecimals: fromTokenDecimals,
+          toDecimals: toTokenDecimals,
+          amount: fromAmount,
         });
       }
     );
